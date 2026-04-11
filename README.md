@@ -134,15 +134,96 @@ G1-0625/
 
 ---
 
-## 📌 補充說明
+## 安裝與執行方式
+
+### 1. 環境需求
+
+請先準備以下環境：
+
+- `JDK 8`（由專案 facet 可確認為 `Java 1.8`）
+- `Apache Tomcat 9.0`
+- `Oracle Database / Oracle XE`
+- `Redis`（供註冊驗證碼、購物車、協作行程等功能使用）
+- `Eclipse IDE for Enterprise Java` 或其他可部署 Java Web 專案的 IDE
+
+### 2. 匯入專案
+
+1. 將專案匯入 IDE（建議以 **Existing Project / Dynamic Web Project** 方式開啟）。
+2. 確認專案設定：
+   - `Java = 1.8`
+   - `Dynamic Web Module = 4.0`
+   - Runtime 指向 `Apache Tomcat v9.0`
+3. 確認所有 jar 已存在於 `WebContent/WEB-INF/lib/`。
+
+### 3. 設定 Oracle 資料庫
+
+本專案透過 **JNDI DataSource** 連線，名稱為：
+
+```text
+java:comp/env/jdbc/TestDB3
+```
+
+可在 Tomcat 的 `context.xml` 中加入類似設定：
+
+```xml
+<Resource name="jdbc/TestDB3"
+          auth="Container"
+          type="javax.sql.DataSource"
+          driverClassName="oracle.jdbc.driver.OracleDriver"
+          url="jdbc:oracle:thin:@localhost:1521:XE"
+          username="YOUR_DB_USER"
+          password="YOUR_DB_PASSWORD"
+          maxTotal="20"
+          maxIdle="10"
+          maxWaitMillis="-1" />
+```
+
+> 若資料庫帳號、密碼或連線字串不同，請依你的本機環境調整。
+
+### 4. 設定 Redis
+
+部分功能會使用本機 Redis，預設連線位置為：
+
+```text
+localhost:6379
+```
+
+若你有啟用密碼驗證，請確認程式中的 Redis 設定與本機一致，否則註冊驗證、購物車或多人協作行程功能可能無法正常使用。
+
+### 5. 啟動專案
+
+1. 在 IDE 中將專案部署到 Tomcat。
+2. 啟動 Tomcat Server。
+3. 開啟瀏覽器進入：
+
+```text
+http://localhost:8080/<context-path>/
+```
+
+常見入口：
+
+- 首頁：`http://localhost:8080/<context-path>/index.jsp`
+- 前台會員登入：`http://localhost:8080/<context-path>/frontstage_member/login2.jsp`
+- 後台登入：`http://localhost:8080/<context-path>/backstage/login.jsp`
+
+### 6. 前端樣板（選用）
+
+若你要調整 `WebContent/mall/` 的前端樣板資源，可另外執行：
+
+```bash
+cd WebContent/mall
+npm install
+npm start
+```
+
+這部分主要用於樣板前端資源開發，**主網站基本執行不一定需要啟動**。
+
+---
+
+## 補充說明
 
 - 專案首頁預設由 `WebContent/WEB-INF/web.xml` 指向 `index.jsp`。
 - 後端資料庫連線集中在 `src/Common/common.java`。
 - `WebContent/mall/` 內含一份以 **Start Bootstrap** 為基礎的商城樣板，可作為前端版型參考。
 
 ---
-
-如果之後需要，我也可以再幫你把這份 `README.md` 補上：
-1. **系統安裝與執行方式**
-2. **資料表/ER 圖說明**
-3. **各模組負責人與功能分工**
